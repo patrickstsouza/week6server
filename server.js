@@ -9,9 +9,5 @@ var credentials = { key: privateKey, cert: certificate };
 var httpsServer = https.createServer(credentials, app);
 httpsServer.listen(4443);
 
-app.get('/:fileName', function (req, res) {
-    // run some server-side code
-    console.log(fileName + ' requested');
-    var fileName = req.params.fileName;
-    res.sendFile(__dirname + '/' + fileName);
-});
+// serve static files - e.g. html, css
+app.use(express.static(__dirname));
