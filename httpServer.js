@@ -28,15 +28,7 @@ var http = require('http');
 var httpServer = http.createServer(app);
 httpServer.listen(4480);
 
-// the / indicates the path that you type into the server - in this case, what happens when you type in:  http://developer.cege.ucl.ac.uk:32560/xxxxx/xxxxx
-app.get('/:name1', function (req, res) {
-	// run some server-side code
-	// the console is the command line of your server - you will see the console.log values in the terminal window
-	console.log('request ' + req.params.name1);
-
-	// the res is the response that the server sends back to the browser - you will see this text in your browser window
-	res.sendFile(__dirname + '/' + req.params.name1);
-});
+var fs = require('fs')
 
 // read in the file and force it to be a string by adding “” at the beginning
 var configtext = "" + fs.readFileSync("/home/studentuser/certs/postGISConnection.js");
@@ -53,12 +45,14 @@ console.log(`database connection object: ${JSON.stringify(config, null, 2)}`)
 var pg = require('pg');
 var pool = new pg.Pool(config);
 
-app.get('postgistest', function (req, res) {
+app.get('/postgistest', function (req, res) {
 	pool.connect(function (err, client, done) {
 		if (err) {
 			console.log("not able to get connection " + err);
 			res.status(400).send(err);
+			return;
 		}
+		console.log('connected to database');
 		client.query('SELECT name FROM united_kingdom_counties'
 			, function (err, result) {
 				done();
