@@ -78,7 +78,7 @@ app.get('/getPOI', function (req, res) {
 		var querystring = "SELECT 'FeatureCollection' As type,	array_to_json(array_agg(f)) As features FROM ";
 		querystring = querystring + "(SELECT 'Feature' As type ,	ST_AsGeoJSON(lg.geom)::json As geometry, ";
 		querystring = querystring + "row_to_json((SELECT l FROM (SELECT id,	name, category) As l )) As properties";
-		querystring = querystring + "FROM united_kingdom_poi As lg limit	100 ) As f ";
+		querystring = querystring + " FROM united_kingdom_poi As lg limit	100 ) As f ";
 		console.log(querystring);
 		client.query(querystring, function (err, result) {
 			//call `done()` to release the client back to the pool
