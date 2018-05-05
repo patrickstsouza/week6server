@@ -157,6 +157,21 @@ app.post('/uploadData', function (req, res) {
 	// note that we are using POST here as we are uploading data
 	// so the parameters form part of the BODY of the request rather than the RESTful API
 	console.dir(req.body);
-	// for now, just echo the request back to the client
-	res.send(req.body);
+	pool.connect(function (err, client, done) {
+		if (err) {
+			console.log("not able to get connection " + err);
+			res.status(400).send(err);
+			return;
+		}
+		var querystring = "INSERT into formdata (name,surname,module) values('" + req.body.name + "', '" + req.body.surname + "', '" + req.body.module+"')";
+		console.log(querystring);
+		client.query(querystring, function (err, result) {
+			done();
+			if (err) {
+				console.log(err);
+				res.status(400).send(err);
+			}
+			res.status(200).send("row inserted");
+		});
+	});
 });
